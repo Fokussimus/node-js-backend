@@ -2,7 +2,7 @@ const Article = require('../models/article.model.js');
 
 // Create and Save a new Note
 exports.create = (req, res) => {
-  // Create a Article
+  // Create an Article
   const article = new Article({
       title: req.body.title || "Untitled Note", 
       content: req.body.content,
@@ -22,6 +22,7 @@ exports.create = (req, res) => {
       });
   });
 };
+
 
 // Retrieve and return all notes from the database.
 exports.findAll = (req, res) => {
@@ -57,14 +58,9 @@ exports.findOne = (req, res) => {
   });
 };
 
+
 // Update a note identified by the noteId in the request
 exports.update = (req, res) => {
-  // Validate Request
-  if(!req.body.content) {
-      return res.status(400).send({
-          message: "Article content can not be empty"
-      });
-  }
 
   // Find note and update it with the request body
   Article.findByIdAndUpdate(req.params.articleId, {
@@ -89,6 +85,7 @@ exports.update = (req, res) => {
       });
   });
 };
+
 
 // Delete a note with the specified noteId in the request
 exports.delete = (req, res) => {
