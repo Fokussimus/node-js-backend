@@ -2,17 +2,14 @@ const Article = require('../models/article.model.js');
 
 // Create and Save a new Note
 exports.create = (req, res) => {
-  // Validate request
-  if(!req.body.content) {
-      return res.status(400).send({
-          message: "Article content can not be empty"
-      });
-  }
-
   // Create a Article
   const article = new Article({
       title: req.body.title || "Untitled Note", 
-      content: req.body.content
+      content: req.body.content,
+      summary: req.body.summary,
+      title_img: req.body.title_img,
+      author: req.body.author,
+      tags: req.body.tags
   });
 
   // Save Note in the database
