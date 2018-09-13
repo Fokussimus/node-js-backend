@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-
+const logger = require('morgan')
 // create express app
 const app = express();
 
@@ -13,6 +13,8 @@ app.use(bodyParser.json())
 // Configuring the database
 const dbConfig = require('./config/database.config.js');
 const mongoose = require('mongoose');
+
+app.use(logger('dev'));
 
 mongoose.Promise = global.Promise;
 
@@ -35,6 +37,6 @@ app.get('/', (req, res) => {
 require('./app/routes/article.routes.js')(app);
 
 // listen for requests
-app.listen(3000, () => {
+app.listen(3000, '172.20.3.239', () => {
     console.log("Server is listening on port 3000");
 });
