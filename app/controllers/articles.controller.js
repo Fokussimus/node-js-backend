@@ -25,8 +25,12 @@ exports.create = (req, res) => {
 
 
 // Retrieve and return all notes from the database.
-exports.findAll = (req, res) => {
-  Article.find()
+exports.find = (req, res) => {
+  var filter = {};
+  if(req.query.author) filter.author = req.query.author;
+  if(req.query.tags) filter.tags = req.query.tags;
+  if(req.query.published) filter.published = req.query.published;
+  Article.find(filter)
   .then(articles => {
       res.send(articles);
   }).catch(err => {

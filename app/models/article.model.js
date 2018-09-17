@@ -7,6 +7,7 @@ const ArticleSchema = mongoose.Schema({
   title_img: {type: String, required: true},
   summary: {type: String, required: true},
   content: {type: String, required: true},  
+  published: {type: Boolean},
   tags: [String]
 }, {
     timestamps: true
