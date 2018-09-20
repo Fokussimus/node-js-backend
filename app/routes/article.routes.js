@@ -1,7 +1,12 @@
 module.exports = (app) => {
   const articles = require('../controllers/articles.controller.js');
 
-  // Create a new Note
+/**
+ * @api {post} /articles Add a new article
+ * @apiName CreateArticle
+ * @apiGroup Articles
+ * 
+ * */
   app.post('/articles', articles.create);
 
   // Retrieve all Notes
