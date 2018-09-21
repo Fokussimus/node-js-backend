@@ -1,0 +1,10 @@
+{
+  "name": "Fokussimus Restful API",
+  "version": "0.1.0",
+  "title": "Fokussimus API",
+  "order": [
+    "Article",
+    "Media",
+    "User"
+  ]
+}

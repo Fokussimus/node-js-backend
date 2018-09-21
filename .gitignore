@@ -1,2 +1,4 @@
 node_modules/
 .bin/mime
+doc/*
+!/doc/index.html
