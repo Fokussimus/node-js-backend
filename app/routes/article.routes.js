@@ -1,13 +1,16 @@
+var validator = require('./secure.js')
+
 module.exports = (app) => {
   const articles = require('../controllers/articles.controller.js');
 
   /**
    * @api {post} /articles Add a new article
+   * @apiPermission admin
    * @apiName CreateArticle
    * @apiGroup Article
    * 
    * */
-  app.post('/articles', articles.create);
+  app.post('/articles', validator.verifyToken, articles.create);
 
 
   /**
