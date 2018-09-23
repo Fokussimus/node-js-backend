@@ -1,27 +1,73 @@
 const User = require('../models/user.model.js');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 // Create and Save a new user
 exports.create = (req, res) => {
-    const user = new User({
-        name: req.body.name,
-        usrname: req.body.usrname,
-        password: req.body.password,
-        biography: req.body.biography,
-        links: req.body.links,
-        profile_img: req.body.profile_img
-    });
-
-    // Save user in the database
-    user.save()
-        .then(data => {
-            res.send(data);
-        }).catch(err => {
-            res.status(500).send({
+    console.log(req.body);
+    bcrypt.hash(req.body.password, 10, function (err, hash) {
+        if (err) {
+            return res.status(500).send({
                 message: err.message || "Some error occurred while creating the user."
+            });
+        }
+        else {
+            const user = new User({
+                name: req.body.name,
+                usrname: req.body.usrname,
+                password: hash,
+                biography: req.body.biography,
+                links: req.body.links,
+                profile_img: req.body.profile_img
+            });
+            // Save user in the database
+            user.save()
+                .then(data => {
+                    res.send(data);
+                }).catch(err => {
+                    res.status(500).send({
+                        message: err.message || "Some error occurred while creating the user."
+                    });
+                });
+        }
+    });
+};
+
+exports.login = (req, res) => {
+    User.findOne({ usrname: req.body.usrname })
+        .exec()
+        .then(function (user) {
+            bcrypt.compare(req.body.password, user.password, function (err, result) {
+                if (err) {
+                    return res.status(401).json({
+                        failed: 'Unauthorized Access'
+                    });
+                }
+                if (result) {
+                    const JWTToken = jwt.sign({
+                        email: user.email,
+                        _id: user._id
+                    },
+                        'secret',
+                        {
+                            expiresIn: '2h'
+                        });
+                    return res.status(200).json({
+                        success: 'Welcome to the JWT Auth',
+                        token: JWTToken
+                    });
+                }
+                return res.status(401).json({
+                    failed: 'Unauthorized Access'
+                });
+            });
+        })
+        .catch(error => {
+            res.status(500).json({
+                error: error
             });
         });
 };
-
 
 // Retrieve and return all users from the database.
 exports.find = (req, res) => {
