@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const logger = require('morgan')
+var path = require('path');
 // create express app
 const app = express();
 
@@ -32,6 +33,9 @@ mongoose.connect(dbConfig.url, {
 app.get('/', (req, res) => {
     res.json({"message": "Welcome to fokussimus api."});
 });
+
+app.use(express.static('public'));
+
 
 // Require routes
 require('./app/routes/article.routes.js')(app);

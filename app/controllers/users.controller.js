@@ -37,41 +37,47 @@ exports.login = (req, res) => {
     User.findOne({ usrname: req.body.usrname })
         .exec()
         .then(function (user) {
-            bcrypt.compare(req.body.password, user.password, function (err, result) {
-                if (err) {
-                    return res.status(401).json({
-                        failed: 'Unauthorized Access'
-                    });
-                }
-                if (result) {
-                    const JWTToken = jwt.sign({
-                        email: user.email,
-                        _id: user._id
-                    },
-                        'secret',
-                        {
-                            expiresIn: '2h'
+            if (user !== null) {
+                bcrypt.compare(req.body.password, user.password, function (err, result) {
+                    if (err) {
+                        return res.status(401).json({
+                            message: 'User not found'
                         });
-                    return res.status(200).json({
-                        success: 'Welcome to the JWT Auth',
-                        token: JWTToken
+                    }
+                    if (result) {
+                        const JWTToken = jwt.sign({
+                            email: user.email,
+                            _id: user._id
+                        },
+                            'secret',
+                            {
+                                expiresIn: '2h'
+                            });
+                        return res.status(200).json({
+                            success: 'Welcome to fokussimus.',
+                            token: JWTToken
+                        });
+                    }
+                    return res.status(401).json({
+                        message: 'Unauthorized Access',
                     });
-                }
-                return res.status(401).json({
-                    failed: 'Unauthorized Access'
                 });
-            });
+            } else {
+                res.status(401).json({
+                    message: 'User not found'
+                })
+            }
         })
         .catch(error => {
             res.status(500).json({
-                error: error
+                error: error.message
             });
         });
 };
 
 // Retrieve and return all users from the database.
 exports.find = (req, res) => {
-    User.find()
+    User.find().select({"usrname":1})
         .then(user => {
             res.send(user);
         }).catch(err => {
